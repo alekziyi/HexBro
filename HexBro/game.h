@@ -25,7 +25,6 @@ namespace Board {
 	void redo(Board& board);
 	std::vector<int> get_available_moves(Board& board); //获取空位一维坐标列表
 	int check_state(Board& _board); //检查棋盘状态
-
 };
 
 class Player {
@@ -40,8 +39,7 @@ public:
 	virtual void call_back_fn();
 };
 
-class Game
-{
+class Game {
 public:
 	Game(Board::Board* board = NULL);
 	~Game();

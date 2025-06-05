@@ -3,10 +3,10 @@
 #include <iostream>
 using namespace std;
 
-
 HumanPlayer::HumanPlayer(string name) {
 	this->name = name;
 }
+
 int HumanPlayer::get_move_fn() {
 	char x;
 	int y;

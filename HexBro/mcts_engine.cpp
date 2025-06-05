@@ -179,3 +179,4 @@ void MCTSEngine::reset() {
 	this->root = NULL;
 	this->search_time = 15;
 }
+

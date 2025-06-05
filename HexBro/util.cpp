@@ -77,9 +77,7 @@ vector<int> recovery::read_file(string game_id) {
 		// 更新搜索起点，跳过已经匹配的部分
 		data = matches.suffix().str();
 	}
-
 	return actions;
-
 }
 
 void recovery::write_step(string game_id, int action) {
