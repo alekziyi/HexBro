@@ -1,10 +1,10 @@
+//文件名: game.h
+//声明: 游戏类和玩家基类
 #pragma once
-
 #include "config.h"
-#include<vector>
-#include<queue>
-#include<string>
-
+#include <vector>
+#include <queue>
+#include <string>
 namespace Board {
 	typedef struct _Board {
 		int step_sum = 0; //已经走子过的步数
@@ -13,7 +13,6 @@ namespace Board {
 		int step[BOARD_SIZE * BOARD_SIZE] = { 0 }; //走子日志
 		int state = 0; //状态(0对局中 1先手胜 -1后手胜)
 	} Board;
-
 	void do_move(Board& board, int move); //对棋盘走子
 	void print(Board& board); //打印棋盘
 	int location_to_move(int x, int y); //二维坐标转一维坐标
@@ -26,7 +25,6 @@ namespace Board {
 	std::vector<int> get_available_moves(Board& board); //获取空位一维坐标列表
 	int check_state(Board& _board); //检查棋盘状态
 };
-
 class Player {
 public:
 	Player() :name("player"), board(NULL), winner(false) {};
@@ -38,7 +36,6 @@ public:
 	virtual int get_move_fn();
 	virtual void call_back_fn();
 };
-
 class Game {
 public:
 	Game(Board::Board* board = NULL);
@@ -61,4 +58,3 @@ private:
 	Board::Board* board;
 	void recovery();
 };
-

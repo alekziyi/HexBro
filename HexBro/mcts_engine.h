@@ -1,9 +1,10 @@
+//文件名: mcts_engine.h
+//声明: MCTS引擎类
 #pragma once
 #include "game.h"
 #include <string.h>
 #include <map>
 #include <shared_mutex>
-
 class Node {
 public:
 	Node(int player, Node* parent = NULL);
@@ -17,7 +18,6 @@ public:
 	Node* children[BOARD_SIZE * BOARD_SIZE] = { 0 };
 	std::mutex _mutex;
 };
-
 class MCTSEngine {
 public:
 	MCTSEngine();

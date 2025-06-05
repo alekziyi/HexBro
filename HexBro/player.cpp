@@ -1,12 +1,12 @@
+//文件名: player.cpp
+//实现: HumanPlayer和MCTSplayer
 #include "player.h"
 #include "util.h"
 #include <iostream>
 using namespace std;
-
 HumanPlayer::HumanPlayer(string name) {
 	this->name = name;
 }
-
 int HumanPlayer::get_move_fn() {
 	char x;
 	int y;
@@ -21,22 +21,18 @@ int HumanPlayer::get_move_fn() {
 	}
 	return move;
 }
-
 void HumanPlayer::reset() {
 
 }
-//***********************************************************
 MCTSPlayer::MCTSPlayer(string name) {
 	this->name = name;
 }
-
 int MCTSPlayer::get_move_fn() {
 	if (this->board->step_sum == 0) {
 		return Board::location_to_move(5, 5);
 	}
 	return this->engine.get_move(this->board);
 }
-
 void MCTSPlayer::call_back_fn() {
 	this->engine.reset();
 }

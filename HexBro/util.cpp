@@ -1,15 +1,15 @@
+//文件名: util.cpp
+//实现: 工具函数
 #include "util.h"
-#include<fstream>
+#include <fstream>
 #include <regex>
-#include<sstream>
+#include <sstream>
 #include <filesystem>
 using namespace std;
-
 void config::read_config(int& is_first, std::string& player1_name, std::string& player2_name) {
 	std::string file_name = "config.ini";
 	std::ifstream config(file_name);
 	std::string line;
-
 	if (!config.is_open()) {
 		std::cerr << "未找到: " << file_name << std::endl;
 		std::ofstream outFile(file_name);
@@ -30,9 +30,7 @@ void config::read_config(int& is_first, std::string& player1_name, std::string& 
 		player1_name = "human";
 		player2_name = "computer";
 		return;
-
 	}
-
 	while (std::getline(config, line)) {
 		if (line.find("is_first=") == 0) {
 			is_first = std::stoi(line.substr(line.find('=') + 1));
@@ -44,11 +42,8 @@ void config::read_config(int& is_first, std::string& player1_name, std::string& 
 			player2_name = line.substr(line.find('=') + 1);
 		}
 	}
-
 	config.close();
 }
-
-
 bool recovery::check_recovery_file(string game_id) {
 	string file_name = game_id + "recovery.txt";
 	if (std::filesystem::exists(file_name)) {
@@ -56,7 +51,6 @@ bool recovery::check_recovery_file(string game_id) {
 	}
 	return false;
 }
-
 vector<int> recovery::read_file(string game_id) {
 	string file_name = game_id + "recovery.txt";
 	ifstream recovery_file(file_name);
@@ -79,14 +73,12 @@ vector<int> recovery::read_file(string game_id) {
 	}
 	return actions;
 }
-
 void recovery::write_step(string game_id, int action) {
 	string file_name = game_id + "recovery.txt";
 	ofstream recovery_file(file_name, ios::app);
 	recovery_file << '[' << action << ']';
 	recovery_file.close();
 }
-
 void  game::get_input_to_number(char& _x, int& _y) {
 	string str;
 	char x;
@@ -96,7 +88,6 @@ void  game::get_input_to_number(char& _x, int& _y) {
 		y = 0;
 		cin.ignore();
 		cin >> str;
-
 		std::smatch matches;
 		if (std::regex_search(str, matches, reg)) {
 			string number = matches[0];
@@ -113,7 +104,6 @@ void  game::get_input_to_number(char& _x, int& _y) {
 				std::cout << "输入有误，请重新输入: ";
 				continue;
 			}
-
 			if (x >= 'a') {
 				x -= 32;
 			}

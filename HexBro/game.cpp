@@ -1,25 +1,23 @@
+//文件名: game.cpp
+//实现: Hex游戏逻辑
 #include "game.h"
 #include "util.h"
-#include<iostream>
-#include<fstream>
-#include<sstream>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <ctime>
-#include<chrono>
-#include<string>
-#include<iomanip>
+#include <chrono>
+#include <string>
+#include <iomanip>
 using namespace std;
-
 static int u[] = { 0,0,1,-1,1,-1 };
 static int v[] = { 1,-1,0,0,1,-1 };
-//static bool check_map[BOARD_SIZE][BOARD_SIZE];
-
 void Board::do_move(Board& board, int move) {
 	board.board[move] = board.run_player;
 	board.step[board.step_sum] = move;
 	board.step_sum++;
 	board.run_player *= -1;
 }
-
 void Board::print(Board& board) {
 	int(*board2d)[BOARD_SIZE] = (int(*)[BOARD_SIZE])board.board;
 	int z_y = BOARD_SIZE;
@@ -40,7 +38,6 @@ void Board::print(Board& board) {
 	for (int i = 0; i < BOARD_SIZE + 3; i++)cout << ' ';
 	for (int i = 0; i < BOARD_SIZE; i++)cout << ' ' << z_x++;
 	cout << endl;
-
 	if (board.step_sum > 0) {
 		char x;
 		int y;
@@ -59,16 +56,13 @@ void Board::print(Board& board) {
 		cout << "blue player win!" << endl;
 	}
 }
-
 int Board::location_to_move(int x, int y) {
 	return x * BOARD_SIZE + y;
 }
-
 void Board::move_to_location(int move, int& x, int& y) {
 	x = move / BOARD_SIZE;
 	y = move % BOARD_SIZE;
 }
-
 int Board::number_to_move(char x, int y) {
 	if (x >= 'a') {
 		x -= 32;
@@ -80,14 +74,12 @@ int Board::number_to_move(char x, int y) {
 	}
 	return -1;
 }
-
 void Board::move_to_number(int move, char& x, int& y) {
 	int l_x, l_y;
 	move_to_location(move, l_x, l_y);
 	x = 'A' + l_x;
 	y = l_y + 1;
 }
-
 void Board::random_do_move(Board& board) {
 	int r = rand() % (BOARD_SIZE * BOARD_SIZE - board.step_sum);
 	int move = -1;
@@ -99,7 +91,6 @@ void Board::random_do_move(Board& board) {
 	} while (r--);
 	do_move(board, move);
 }
-
 void Board::call_back(Board& board) {
 	if (board.step_sum > 0) {
 		board.step_sum--;
@@ -108,13 +99,11 @@ void Board::call_back(Board& board) {
 		board.state = 0;
 	}
 }
-
 void Board::redo(Board& board) {
 	board.board[board.step[board.step_sum]] = board.run_player;
 	board.step_sum++;
 	board.run_player = ((board.step_sum + 1) % 2) * 2 - 1;
 }
-
 vector<int> Board::get_available_moves(Board& board) {
 	vector<int> available_moves;
 	for (int move = 0; move < BOARD_SIZE * BOARD_SIZE; move++) {
@@ -122,20 +111,15 @@ vector<int> Board::get_available_moves(Board& board) {
 			available_moves.push_back(move);
 		}
 	}
-
 	return available_moves;
 }
-
 int Board::check_state(Board& _board) {
 	if (_board.step_sum < BOARD_SIZE * 2 - 1) return 0;
 	Board board = _board;
-
 	int(*board2d)[BOARD_SIZE] = (int(*)[BOARD_SIZE])board.board;
 	int x, y, x0, y0;
-
 	queue<int> search_queue_x;
 	queue<int> search_queue_y;
-
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		if (board2d[i][0] == 1) {
 			search_queue_x.push(i);
@@ -162,7 +146,6 @@ int Board::check_state(Board& _board) {
 			}
 		}
 	}
-
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		if (board2d[0][i] == -1) {
 			search_queue_x.push(0);
@@ -189,23 +172,19 @@ int Board::check_state(Board& _board) {
 			}
 		}
 	}
-
 	return 0;
 }
-
 Player::Player(string name) {
 	this->name = name;
 }
 void Player::game_start_fn(Board::Board* board) {
 	this->board = board;
 }
-
 int Player::get_move_fn() {
 	vector<int> available_moves = Board::get_available_moves(*this->board);
 	return available_moves[rand() % available_moves.size()];
 }
 void Player::call_back_fn() {
-
 }
 Game::Game(Board::Board* board) {
 	this->board = board == NULL ? new Board::Board : board;
@@ -254,7 +233,6 @@ void Game::start() {
 		}
 	}
 }
-
 int Game::pause_settings() {
 	if (this->board->state == 0)cout << "继续-fd" << endl;
 	if (this->board->step_sum > 0)cout << "撤回-cb" << endl;
@@ -296,7 +274,6 @@ void Game::call_back() {
 		recovery::write_step(this->game_id, -1);
 	}
 }
-
 void Game::redo() {
 	if (this->board->step_sum < this->max_step) {
 		Board::redo(*this->board);
@@ -304,7 +281,6 @@ void Game::redo() {
 		recovery::write_step(this->game_id, -2);
 	}
 }
-
 void Game::output_sheet() {
 	ostringstream n_oss;
 	n_oss << "HEX-" << this->player1->name << " vs " << this->player2->name << '-';
@@ -318,17 +294,13 @@ void Game::output_sheet() {
 		n_oss << "未结束";
 	}
 	n_oss << ".txt";
-
 	ostringstream d_oss;
 	//head1
 	d_oss << "{[HEX]";
-
 	//head2
 	d_oss << '[' << this->player1->name << " R]";
-
 	//head3
 	d_oss << '[' << this->player2->name << " B]";
-
 	//head4
 	if (this->board->state == 1) {
 		d_oss << "[先手胜]";
@@ -339,7 +311,6 @@ void Game::output_sheet() {
 	else {
 		d_oss << "[未结束]";
 	}
-
 	//head5
 	auto now = std::chrono::system_clock::now();
 	auto in_time_t = std::chrono::system_clock::to_time_t(now);
@@ -350,10 +321,8 @@ void Game::output_sheet() {
 	localtime_r(&in_time_t, &buf);
 #endif
 	d_oss << std::put_time(&buf, "[%Y.%m.%d %H:%M XX]");
-
 	//head6
 	d_oss << "[XXXX XXXX]";
-
 	char x;
 	int y;
 	for (int i = 0; i < this->board->step_sum; i++) {
@@ -371,7 +340,6 @@ void Game::output_sheet() {
 	file << d_oss.str();
 	file.close();
 }
-
 void Game::recovery() {
 	vector<int> data = recovery::read_file(this->game_id);
 	for (int action : data) {
